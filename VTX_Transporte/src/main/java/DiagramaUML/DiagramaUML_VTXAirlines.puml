@@ -1,0 +1,291 @@
+@startuml
+title Proyecto VTX Transporte Aéreo - Diagrama de Clases Completo
+
+' =========================
+' PAQUETE VISTA
+' =========================
+package vista {
+
+  class Form_Principal {
+    - btnSalir : JButton
+    - btnVerVuelos : JButton
+    + main()
+    + btnSalirAction()
+    + btnVerVuelosAction()
+  }
+
+  class Form_MenuPrincipal {
+    - comboOrigen : JComboBox
+    - comboDestino : JComboBox
+    - comboCabina : JComboBox
+    - comboFechaIda : JComboBox
+    - comboFechaVuelta : JComboBox
+    - btnBuscarVuelos : JButton
+    - btnRegresar : JButton
+    + initComponents()
+    + buscarVuelos()
+    + regresar()
+  }
+
+  ' ==== HERENCIA SUGERIDA PARA VUELOS ====
+  abstract class Form_VuelosBase {
+    - listaOpciones : List<Vuelo>
+    - btnElegir[4] : JButton
+    - btnRegresar : JButton
+    + mostrarOpciones()
+    + elegirVuelo(index: int)
+    + regresar()
+  }
+
+  class Form_VuelosIdaEconomy
+  class Form_VuelosIdaPremium
+  class Form_VuelosVueltaEconomy
+  class Form_VuelosVueltaPremium
+
+  Form_VuelosIdaEconomy --|> Form_VuelosBase
+  Form_VuelosIdaPremium --|> Form_VuelosBase
+  Form_VuelosVueltaEconomy --|> Form_VuelosBase
+  Form_VuelosVueltaPremium --|> Form_VuelosBase
+
+  class Form_CabinaIda {
+    - btnElegirEconomica : JButton
+    - btnElegirPremium : JButton
+    - btnRegresar : JButton
+    + mostrarDetallesCabina()
+    + seleccionarCabina(tipo: String)
+    + regresar()
+  }
+
+  class Form_CabinaVuelta {
+    - btnElegirEconomica : JButton
+    - btnElegirPremium : JButton
+    - btnRegresar : JButton
+    + mostrarDetallesCabina()
+    + seleccionarCabina(tipo: String)
+    + regresar()
+  }
+
+  class Form_AvionIdaEconomy {
+    - btnAsientos[24] : JButton
+    - btnRegresar : JButton
+    - btnSiguiente : JButton
+    - jScrollPane1 : JScrollPane
+    - jPanel1 : JPanel
+    + seleccionarAsiento(numero: int)
+    + continuar()
+    + regresar()
+  }
+
+  class Form_AvionIdaPremium {
+    - btnAsientos[24] : JButton
+    - btnRegresar : JButton
+    - btnSiguiente : JButton
+    - jScrollPane1 : JScrollPane
+    - jPanel1 : JPanel
+    + seleccionarAsiento(numero: int)
+    + continuar()
+    + regresar()
+  }
+
+  class Form_AvionVueltaEconomy {
+    - btnAsientos[24] : JButton
+    - btnRegresar : JButton
+    - btnSiguiente : JButton
+    - jScrollPane1 : JScrollPane
+    - jPanel1 : JPanel
+    + seleccionarAsiento(numero: int)
+    + continuar()
+    + regresar()
+  }
+
+  class Form_AvionVueltaPremium {
+    - btnAsientos[24] : JButton
+    - btnRegresar : JButton
+    - btnSiguiente : JButton
+    - jScrollPane1 : JScrollPane
+    - jPanel1 : JPanel
+    + seleccionarAsiento(numero: int)
+    + continuar()
+    + regresar()
+  }
+
+  ' ==== HERENCIA PARA ASIENTOS ====
+  abstract class Form_AsientosBase {
+    - btnAsientos[n] : JButton
+    - txtNumeroAsiento : JTextField
+    - btnRegresar : JButton
+    + seleccionarAsiento(codigo: String)
+    + mostrarNumeroAsiento()
+    + regresar()
+  }
+
+  class Form_AsientoIdaPremium {
+    - btnSiguiente : JButton
+    + continuar()
+  }
+
+  class Form_AsientosVueloEconomy {
+    - btnRegistrarDatos : JButton
+    + registrarDatos()
+  }
+
+  Form_AsientoIdaPremium --|> Form_AsientosBase
+  Form_AsientosVueloEconomy --|> Form_AsientosBase
+
+  class Form_DatosPagar {
+    - txtNombre : JTextField
+    - txtDocumentoID : JTextField
+    - txtCorreo : JTextField
+    - txtTelefono : JTextField
+    - txtNumeroTarjeta : JTextField
+    - txtCVI : JTextField
+    - txtVuelo : JTextField
+    - txtAsientoIda : JTextField
+    - txtAsientoVuelta : JTextField
+    - txtPrecio : JTextField
+    - btnRegresar : JButton
+    - btnPagar : JButton
+    + cargarDatos()
+    + validarDatos()
+    + procesarPago()
+    + regresar()
+  }
+}
+
+' =========================
+' PAQUETE MODELO
+' =========================
+package modelo {
+
+  class Asiento {
+    - numero : int
+    - tipo : String
+    - ocupado : boolean
+    + Asiento(numero: int, tipo: String)
+    + getNumero() : int
+    + getTipo() : String
+    + isOcupado() : boolean
+    + ocupar() : void
+  }
+
+  class Avion {
+    - codigo : String
+    - modelo : String
+    - capacidadEconomy : int
+    - capacidadPremium : int
+    + Avion(codigo: String, modelo: String, capacidadEconomy: int, capacidadPremium: int)
+    + getCodigo() : String
+    + getModelo() : String
+    + getCapacidadEconomy() : int
+    + getCapacidadPremium() : int
+  }
+
+  class Cliente {
+    - cedula : String
+    - nombres : String
+    - apellidos : String
+    - correo : String
+    + Cliente(cedula: String, nombres: String, apellidos: String, correo: String)
+    + getCedula() : String
+    + getNombres() : String
+    + getApellidos() : String
+    + getCorreo() : String
+  }
+
+  class Pasaje {
+    - numero : String
+    - reserva : Reserva
+    - precioFinal : double
+    + Pasaje(numero: String, reserva: Reserva, precioFinal: double)
+    + getNumero() : String
+    + getReserva() : Reserva
+    + getPrecioFinal() : double
+  }
+
+  class Reserva {
+    - codigo : String
+    - cliente : Cliente
+    - vuelo : Vuelo
+    - tipoAsiento : String
+    + Reserva(codigo: String, cliente: Cliente, vuelo: Vuelo, tipoAsiento: String)
+    + getCodigo() : String
+    + getCliente() : Cliente
+    + getVuelo() : Vuelo
+    + getTipoAsiento() : String
+  }
+
+  class Ruta {
+    - codigo : String
+    - origen : String
+    - destino : String
+    - duracionMinutos : int
+    + Ruta(codigo: String, origen: String, destino: String, duracionMinutos: int)
+    + getCodigo() : String
+    + getOrigen() : String
+    + getDestino() : String
+    + getDuracionMinutos() : int
+  }
+
+  class Vuelo {
+    - codigo : String
+    - ruta : Ruta
+    - avion : Avion
+    - fecha : String
+    - precioEconomy : double
+    - precioPremium : double
+    + Vuelo(codigo: String, ruta: Ruta, avion: Avion, fecha: String, precioEconomy: double, precioPremium: double)
+    + getCodigo() : String
+    + getRuta() : Ruta
+    + getAvion() : Avion
+    + getFecha() : String
+    + getPrecioEconomy() : double
+    + getPrecioPremium() : double
+  }
+
+  ' ==== RELACIONES ENTRE CLASES ====
+  Reserva --> Cliente
+  Reserva --> Vuelo
+  Pasaje --> Reserva
+  Vuelo --> Ruta
+  Vuelo --> Avion
+  Avion --> Asiento
+}
+
+' =========================
+' PAQUETE UTIL
+' =========================
+package util {
+  class Constantes {
+    + PAISES_VALIDOS : List<String>
+  }
+
+  class DatosReserva {
+    + vuelosIda : List<Object[]>
+    + vuelosRegreso : List<Object[]>
+    + total : double
+    + limpiar() : void
+  }
+
+  class Validaciones
+  class ArchivoUtil
+}
+
+' =========================
+' PAQUETE DAO
+' =========================
+package dao {
+  class RutaDAO {
+    - rutas : List<Ruta>
+    + RutaDAO()
+    - cargarRutas() : void
+    + getRutas() : List<Ruta>
+  }
+
+  class AvionDAO
+  class ClienteDAO
+  class VueloDAO
+
+  ' ==== RELACIONES ====
+  RutaDAO --> modelo.Ruta
+  RutaDAO --> util.Constantes
+@enduml
